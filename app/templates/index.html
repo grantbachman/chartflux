@@ -1,0 +1,17 @@
+<html>
+	<head>
+		{% if title %}
+		<title>{{ title }}</title>
+		{% else %}
+		<title>Welcome to Chartflux!</title>	
+		{% endif %}
+	</head>
+	<body>
+		{% if ticker %}
+		<h1>Ticker: {{ ticker }}</h1>
+		{% else %}	
+		<h1>Hello there. </h1>
+		{% endif %}
+
+	</body>
+</html>
