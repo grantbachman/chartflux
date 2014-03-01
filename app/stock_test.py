@@ -5,19 +5,19 @@ class StockTest(unittest.TestCase):
 
 	def test_should_be_nyse(self):
 		stock = Stock("aa")  # Alcoa
-		self.failIf(not stock.isNYSE())
+		self.failIf(not stock.is_NYSE())
 
 	def test_should_not_be_nyse(self):
 		stock = Stock("xxxxxx")
-		self.failIf(stock.isNYSE()) 
+		self.failIf(stock.is_NYSE()) 
 
 	def test_should_be_nasdaq(self):
 		stock = Stock("aapl")  # Apple
-		self.failIf(not stock.isNASDAQ())
+		self.failIf(not stock.is_NASDAQ())
 
 	def test_should_not_be_nasdaq(self):
 		stock = Stock("xxxxxx")
-		self.failIf(stock.isNASDAQ()) 
+		self.failIf(stock.is_NASDAQ()) 
 
 
 

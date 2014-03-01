@@ -8,10 +8,17 @@ class Stock:
 	def __init__(self, ticker):
 		self.ticker=ticker.upper()
 		
-	def isNYSE(self):
-		nyse = pd.read_csv('NYSE.txt', sep='\t')
-		return nyse.apply(lambda x: self.ticker in x.values, axis=1).any()
+	def is_NYSE(self):
+		return self.is_ticker_in_file('NYSE.txt')
 
-	def isNASDAQ(self):
-		nasdaq = pd.read_csv('NASDAQ.txt', sep='\t') 
-		return nasdaq.apply(lambda x: self.ticker in x.values, axis=1).any()
+	def is_NASDAQ(self):
+		return self.is_ticker_in_file('NASDAQ.txt')
+
+	def is_ticker_in_file(self, filename):
+		isFound = False
+		f = open(filename, 'r')
+		for line in f:
+			pos = line.index('\t')	
+			if line[0:pos] == self.ticker:
+				isFound = True
+		return isFound
