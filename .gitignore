@@ -1,3 +1,5 @@
 env
 *.pyc
+*.ipynb  
+.ipynb_checkpoints
 .DS_Store

@@ -1,0 +1,16 @@
+<html>
+	<head>
+		{% if title %}
+		<title>{{ title }}</title>
+		{% else %}
+		<title>Welcome to Chartflux!</title>	
+		{% endif %}
+	</head>
+	<body>
+		Ticker: {{ stock.ticker }}
+		From: {{ stock.start }}
+		To: {{ stock.end }}
+		<br />
+		{{ stock.data }}
+	</body>
+</html>

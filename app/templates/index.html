@@ -7,11 +7,12 @@
 		{% endif %}
 	</head>
 	<body>
-		{% if ticker %}
-		<h1>Ticker: {{ ticker }}</h1>
-		{% else %}	
-		<h1>Hello there. </h1>
-		{% endif %}
-
+		<h1>Welcome. Enter a ticker symbol:</h1>
+		<form method="GET" action="/chart">
+			{% if form %}
+				{{ form.ticker.label }} {{ form.ticker(size=6) }}
+			{% endif %}
+		<input type="submit" value="Go">
+		</form>
 	</body>
 </html>
