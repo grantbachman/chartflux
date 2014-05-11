@@ -18,14 +18,19 @@ class Stock:
 		self.ticker = ticker.upper()
 
 
+	def set_data(self, start, end):
+		self.start = start
+		self.end = end
+		self.data = self.get_data(start, end)
+
 	# return either the stock data or 0
-	def fetch_data(self, start, end): 
+	def get_data(self, start, end):
 		try:
 			data = DataReader(self.ticker, "yahoo", start, end)
-		except:	   # stock data not retrieved		
-			data = None 
+		except:	   # stock data not retrieved
+			data = None
 		if isinstance(data, DataFrame):
 			return data
 		else:
 			self.data, self.start, self.end = None, None, None
-			return None 
+			return None

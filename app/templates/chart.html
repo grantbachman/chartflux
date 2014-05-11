@@ -3,14 +3,17 @@
 		{% if title %}
 		<title>{{ title }}</title>
 		{% else %}
-		<title>Welcome to Chartflux!</title>	
+		<title>Welcome to Chartflux!</title>
 		{% endif %}
+		<script>
+			var data = JSON.parse('{{ data }}')
+		</script>
 	</head>
 	<body>
-		Ticker: {{ stock.ticker }}
-		From: {{ stock.start }}
-		To: {{ stock.end }}
+		Ticker: {{ stock.ticker }}<br />
+		From: {{ stock.start }}<br />
+		To: {{ stock.end }}<br />
+		Data: {{ stock.data.to_json() }}<br />
 		<br />
-		{{ stock.data }}
 	</body>
 </html>

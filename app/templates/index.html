@@ -3,15 +3,18 @@
 		{% if title %}
 		<title>{{ title }}</title>
 		{% else %}
-		<title>Welcome to Chartflux!</title>	
+		<title>Welcome to Chartflux!</title>
 		{% endif %}
 	</head>
 	<body>
 		<h1>Welcome. Enter a ticker symbol:</h1>
-		<form method="GET" action="/chart">
-			{% if form %}
-				{{ form.ticker.label }} {{ form.ticker(size=6) }}
-			{% endif %}
+		<form method="POST" action="/index">
+				<input name=_csrf_token type=hidden value="{{ csrf_token() }}">
+				{% for message in get_flashed_messages() %}
+				<div class="flash">{{ message }}</div>
+				{% endfor %}
+				{{ form.csrf_token }}
+				{{ form.ticker.label }} {{ form.ticker }}
 		<input type="submit" value="Go">
 		</form>
 	</body>
