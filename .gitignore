@@ -1,4 +1,5 @@
 env
+app/templates/d3.html
 *.pyc
 *.ipynb  
 .ipynb_checkpoints

@@ -11,13 +11,14 @@ import unittest
 
 class TestStock(unittest.TestCase):
 
-	def setUp(self):
-		self.stock = Stock("tsla")
-
 	def test_init(self):
+		self.stock = Stock("tsla")
 		self.failIf(self.stock.ticker != "TSLA")
+		self.failIf(self.stock.is_valid is not True)
+		self.failUnless(self.stock.is_valid is True)
 
 	def test_set_data(self):
+		self.stock = Stock("tsla")
 		start = dt.date(2014, 02, 24)
 		end = dt.date(2014, 02, 28)
 		self.stock.set_data(start, end)
@@ -29,6 +30,7 @@ class TestStock(unittest.TestCase):
 	#	says "Hello? I would like some stock data, please."
 
 	def validate_test_data(self):
+		self.stock = Stock("tsla")
 		start = dt.date(2014, 02, 24)
 		end = dt.date(2014, 02, 28)
 		data_from_yahoo = self.stock.get_data(start, end)
@@ -40,20 +42,18 @@ class TestStock(unittest.TestCase):
 	# Should return a valid DataFrame
 	def test_valid_stock(self):
 		stock = Stock("TSLA")
-		end = dt.date.today()
-		start = end - dt.timedelta(days = 7)
-		data = stock.get_data(start, end)
-		self.failIf(data is None)
-		self.failUnless(isinstance(data, DataFrame))
+		stock.set_data()
+		self.failIf(stock.data is None)
+		self.failUnless(isinstance(stock.data, DataFrame))
+		self.failIf(stock.is_valid is not True)
 
 	# Should NOT return a valid DataFrame
 	def test_invalid_stock(self):
 		stock = Stock("asdfasf7")
-		end = dt.date.today()
-		start = end - dt.timedelta(days = 7)
-		data = stock.get_data(start, end)
-		self.failIf(data is not None)
-		self.failUnless(type(data) is NoneType)
+		stock.set_data()
+		self.failIf(stock.data is not None)
+		self.failUnless(type(stock.data) is NoneType)
+		self.failIf(stock.is_valid is True)
 
 def main():
 	unittest.main()

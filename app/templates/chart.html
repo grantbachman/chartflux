@@ -5,15 +5,25 @@
 		{% else %}
 		<title>Welcome to Chartflux!</title>
 		{% endif %}
-		<script>
-			var data = JSON.parse('{{ data }}')
+		<script type="text/javascript"
+						src="{{ url_for('static', filename='d3.v3.js') }}">
 		</script>
 	</head>
 	<body>
 		Ticker: {{ stock.ticker }}<br />
 		From: {{ stock.start }}<br />
 		To: {{ stock.end }}<br />
-		Data: {{ stock.data.to_json() }}<br />
+		Data: {{ stock.data }}<br />
 		<br />
 	</body>
+
+		<script type="text/javascript">
+		var dataset = JSON.parse('{{ data }}')
+		var svgWidth = 750;
+		var svgHeight = 250;
+
+		var svg = d3.select("body").append("svg")
+								.attr("width", svgWidth)
+								.attr("height", svgHeight);
+		</script>
 </html>

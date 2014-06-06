@@ -12,6 +12,31 @@ from flask import render_template, url_for, redirect, request, flash,\
 def root():
   return redirect(url_for('index'))
 
+@myApp.route('/d3')
+def d3():
+  return render_template('d3.html')
+
+
+@myApp.route('/stock/<stock>')
+def show_stock(stock):
+  stock = Stock(stock)
+  if not stock.is_valid:
+    return redirect(url_for('index'))
+  else:
+    end = dt.date.today()
+    start = end - dt.timedelta(days = 5)
+    stock.set_data(start, end)
+    format_data = stock.data\
+                       .reset_index()\
+                       .to_json(date_format='iso', orient='index')
+
+    # Markup tells jinja2 that the object is safe for rendering, without
+    # escaping the quotes (caused problems when creating JSON object).
+    format_data = Markup(format_data)
+    # need to redirect instead
+    return render_template('chart.html', stock=stock, data=format_data)
+
+
 @myApp.route('/index', methods = ['GET', 'POST'])
 def index():
   form = TickerForm()
@@ -25,11 +50,15 @@ def index():
       end = dt.date.today()
       start = end - dt.timedelta(days = 5)
       stock.set_data(start, end)
+      format_data = stock.data\
+                         .reset_index()\
+                         .to_json(date_format='iso', orient='index')
+
       # Markup tells jinja2 that the object is safe for rendering, without
       # escaping the quotes (caused problems when creating JSON object).
-      data = Markup(stock.data.to_json(date_format='iso', orient='index'))
+      format_data = Markup(format_data)
       # need to redirect instead
-      return render_template('chart.html', stock=stock, data=data)
+      return render_template('chart.html', stock=stock, data=format_data)
   elif request.method == 'GET':
       return render_template('index.html',form=form)
 
