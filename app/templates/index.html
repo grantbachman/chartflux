@@ -7,14 +7,19 @@
 		{% endif %}
 	</head>
 	<body>
-		<h1>Welcome. Enter a ticker symbol:</h1>
-		<form method="POST" action="/index">
-				<input name=_csrf_token type=hidden value="{{ csrf_token() }}">
-				{% for message in get_flashed_messages() %}
-				<div class="flash">{{ message }}</div>
+		<h2>Welcome. Enter a ticker symbol:</h2>
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				{% for message in messages %}
+					<h3>Message: {{ message }}</h3>
 				{% endfor %}
-				{{ form.csrf_token }}
-				{{ form.ticker.label }} {{ form.ticker }}
+			{% endif %}
+		{% endwith %}
+		{% if error %}
+			<h3>Error: {{ error }}</h3>
+		{% endif %}
+		<form method="POST" action="/stock/verify">
+				<input type="text" name="ticker" />
 		<input type="submit" value="Go">
 		</form>
 	</body>
