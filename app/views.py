@@ -23,11 +23,11 @@ def show_stock(stock):
     return render_template('index.html', error = error)
   else:
     end = dt.date.today()
-    start = end - dt.timedelta(days = 5)
+    start = end - dt.timedelta(days = 500)
     stock.set_data(start, end)
-    format_data = stock.data\
-                       .reset_index()\
-                       .to_json(date_format='iso', orient='index')
+    format_data = stock.data.reset_index()  # DateTimeIndex to column
+    format_data = format_data.to_json(date_format='iso', orient='records')
+    #format_data = format_data.to_json(orient='records')
 
     # Markup tells jinja2 that the object is safe for rendering, without
     # escaping the quotes (caused problems when creating JSON object).

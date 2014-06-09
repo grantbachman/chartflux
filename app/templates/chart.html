@@ -8,22 +8,78 @@
 		<script type="text/javascript"
 						src="{{ url_for('static', filename='d3.v3.js') }}">
 		</script>
+		<style>
+
+
+	  .axis path { fill: none; stroke: black ; }  /* border */
+		.axis line { fill: none; stroke: black; }  /* tick marks */
+
+
+		.line { fill: none;
+						stroke: steelblue;
+						stroke-width: 1.5px;
+		}
+		</style>
 	</head>
 	<body>
 		Ticker: {{ stock.ticker }}<br />
 		From: {{ stock.start }}<br />
 		To: {{ stock.end }}<br />
-		Data: {{ stock.data }}<br />
 		<br />
 	</body>
 
 		<script type="text/javascript">
-		var dataset = JSON.parse('{{ data }}')
-		var svgWidth = 750;
-		var svgHeight = 250;
+		var margin = {top: 20, bottom: 30, left: 50, right: 20}
+		var svgWidth = 700 - margin.left - margin.right;
+		var svgHeight = 500 - margin.top - margin.bottom;
+		var parseDate = d3.time.format.iso.parse;
+		var dataset = JSON.parse('{{ data }}');
+		var minDate = parseDate(dataset[0]['Date']);
+		var maxDate = parseDate(dataset[dataset.length - 1]['Date']);
+		var minPrice = d3.min(dataset, function(obj) { return obj['Adj Close']; });
+		var maxPrice = d3.max(dataset, function(obj) { return obj['Adj Close']; });
+
+		var xScale = d3.time.scale()
+												.domain([minDate,maxDate])
+									      .range([0, svgWidth]);
+		var yScale = d3.scale.linear()
+												.domain([minPrice, maxPrice])
+												.range([svgHeight, 0]);
+		var xAxis = d3.svg.axis()
+											.scale(xScale)
+											.orient("bottom")
+											.ticks(d3.time.months, 2);
+
+		var yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 		var svg = d3.select("body").append("svg")
-								.attr("width", svgWidth)
-								.attr("height", svgHeight);
+								.attr("width", svgWidth + margin.left + margin.right)
+								.attr("height", svgHeight + margin.left + margin.bottom)
+				  			.append("g")
+							  .attr("transform", "translate(" + margin.left + ","
+																							  + margin.right + ")")
+
+		var line = d3.svg.line()
+				.x(function(d) { return xScale(parseDate(d['Date'])); })
+				.y(function(d) { return yScale(d['Adj Close']); })
+				.interpolate("linear");
+
+		var lineGraph = svg.append("path")
+											 .attr("class", "line")
+											 .attr("d", line(dataset))
+
+		svg.append("g")
+			 .attr("class", "x axis")
+			 .attr("transform", "translate(0," + svgHeight + ")")
+			 .call(xAxis)
+			 .selectAll("text")
+			 .style("text-anchor", "end")
+			 .attr("transform", "rotate(-65)");
+
+		svg.append("g")
+			 .attr("class", "y axis")
+			 .call(yAxis);
+
+
 		</script>
 </html>
