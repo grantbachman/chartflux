@@ -6,7 +6,7 @@ from pandas import Timestamp, DataFrame, Series
 from pandas.util.testing import assert_frame_equal
 import pandas as pd
 import pickle
-from models import Stock
+from app.models import Stock
 import unittest
 
 class TestStock(unittest.TestCase):
@@ -34,7 +34,7 @@ class TestStock(unittest.TestCase):
 		start = dt.date(2014, 02, 24)
 		end = dt.date(2014, 02, 28)
 		data_from_yahoo = self.stock.get_data(start, end)
-		tsla_file = open('tsla_1week_20140224_20140228.pkl', 'r')
+		tsla_file = open('tests/tsla_1week_20140224_20140228.pkl', 'r')
 		up = pickle.Unpickler(tsla_file)
 		data_from_file = up.load()
 		self.failUnless(assert_frame_equal(data_from_file,data_from_yahoo) is None)
