@@ -1,5 +1,6 @@
 env
 app/templates/d3.html
+instance/
 *.pyc
 #*.ipynb # needed moved to .git/info/exclude to actually ignore IPython Notebooks...
 .ipynb_checkpoints
