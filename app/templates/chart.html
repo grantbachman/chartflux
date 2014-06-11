@@ -33,9 +33,6 @@
 		var parseDate = d3.time.format.iso.parse;
 
 		var dataset = JSON.parse('{{ data }}');
-		var lenDataset = dataset.length
-		var interval;  // pass this to d3.time.scale.nice
-		console.log("Dataset length: " + lenDataset)
 
 		var minDate = parseDate(dataset[0]['Date']);
 		var maxDate = parseDate(dataset[dataset.length - 1]['Date']);
