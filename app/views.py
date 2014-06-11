@@ -23,7 +23,7 @@ def show_stock(stock):
     return render_template('index.html', error = error)
   else:
     end = dt.date.today()
-    start = end - dt.timedelta(days = 750)
+    start = end - dt.timedelta(days = 1000)
     stock.set_data(start, end)
     format_data = stock.data.reset_index()  # DateTimeIndex to column
     format_data = format_data.to_json(date_format='iso', orient='records')
