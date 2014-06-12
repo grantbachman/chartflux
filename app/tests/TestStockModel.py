@@ -9,7 +9,7 @@ import pickle
 from app.models import Stock
 import unittest
 
-class TestStock(unittest.TestCase):
+class TestStockModel(unittest.TestCase):
 
 	def test_init(self):
 		self.stock = Stock("tsla")
@@ -34,6 +34,7 @@ class TestStock(unittest.TestCase):
 		start = dt.date(2014, 02, 24)
 		end = dt.date(2014, 02, 28)
 		data_from_yahoo = self.stock.get_data(start, end)
+		print os.getcwd()
 		tsla_file = open('tests/tsla_1week_20140224_20140228.pkl', 'r')
 		up = pickle.Unpickler(tsla_file)
 		data_from_file = up.load()

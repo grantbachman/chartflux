@@ -27,7 +27,6 @@ def show_stock(stock):
     stock.set_data(start, end)
     format_data = stock.data.reset_index()  # DateTimeIndex to column
     format_data = format_data.to_json(date_format='iso', orient='records')
-    #format_data = format_data.to_json(orient='records')
 
     # Markup tells jinja2 that the object is safe for rendering, without
     # escaping the quotes (caused problems when creating JSON object).

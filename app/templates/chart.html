@@ -41,7 +41,7 @@
 
 		var xScale = d3.time.scale()
 												.domain([minDate,maxDate])
-												.nice(interval)
+												.nice()
 									      .range([0, svgWidth]);
 		var yScale = d3.scale.linear()
 												.domain([minPrice, maxPrice])
@@ -49,7 +49,6 @@
 		var xAxis = d3.svg.axis()
 											.scale(xScale)
 											.orient("bottom")
-											//.ticks(interval[0], interval[1]);
 
 		var yAxis = d3.svg.axis().scale(yScale).orient("left");
 
