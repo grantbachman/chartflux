@@ -18,7 +18,7 @@
 		{% if error %}
 			<h3>Error: {{ error }}</h3>
 		{% endif %}
-		<form method="POST" action="/stock/verify">
+		<form method="GET" action="/chart">
 				<input type="text" name="ticker" />
 		<input type="submit" value="Go">
 		</form>

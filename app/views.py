@@ -1,5 +1,4 @@
 import sys, os
-import re
 import datetime as dt
 from app import myApp
 from models import Stock
@@ -42,23 +41,15 @@ def show_stock():
 
 def getTimeDelta(value=1, unit="years"):
   try:
-    value = int(value)
+    value = float(value)
   except:
     value = 1
   if unit == "days":
-    return dt.timedelta(days = value)
+    return dt.timedelta(days = int(value))
   elif unit == "weeks":
-    return dt.timedelta(weeks = value)
+    return dt.timedelta(weeks = int(value))
   elif unit == "months":
-    return dt.timedelta(days = (value * 30))
+    return dt.timedelta(days = int(value * 30))
   else:
-    return dt.timedelta(days = (value * 365))
-
-
-
-@myApp.route('/stock/verify', methods = ['POST'])
-def verify_stock():
-  ticker = request.form['ticker']
-  if ticker == "":
-    return redirect(url_for('index'))
-  return redirect(url_for('show_stock', ticker=ticker))
+    return dt.timedelta(days = int(value * 365))
+    
