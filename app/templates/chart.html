@@ -5,9 +5,8 @@
 		{% else %}
 		<title>Welcome to Chartflux!</title>
 		{% endif %}
-		<script type="text/javascript"
-						src="{{ url_for('static', filename='d3.v3.js') }}">
-		</script>
+		<script type="text/javascript" src="{{ url_for('static', filename='d3.v3.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='d3.legend.js') }}"></script>
 		<style>
 
 	  .axis path { fill: none; stroke: black; }  /* border */
@@ -20,10 +19,16 @@
 						stroke: steelblue;
 						stroke-width: 1.5px;
 		}
+
+		.legend rect {
+		  fill:white;
+		  stroke:black;
+		  opacity:0.8;
+		}
+
 		</style>
 	</head>
 	<body>
-		Ticker: {{ stock.ticker }}<br />
 		From: {{ stock.start }}<br />
 		To: {{ stock.end }}<br />
 		<br />
@@ -100,7 +105,10 @@
 
 		var lineGraph = svg.append("path")
 											 .attr("class", "line")
+										   .attr("data-legend", "{{ stock.ticker }}" )
 											 .attr("d", line(dataset))
+
+		svg.append("g").attr("class", "legend").attr("transform", "translate(50,30)").call(d3.legend)
 
 		</script>
 </html>
