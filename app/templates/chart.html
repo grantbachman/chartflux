@@ -10,8 +10,11 @@
 		</script>
 		<style>
 
-	  .axis path { fill: none; stroke: black ; }  /* border */
+	  .axis path { fill: none; stroke: black; }  /* border */
+		.xgrid,.ygrid path { fill: none; stroke: black; }
+
 		.axis line { fill: none; stroke: black; }  /* tick marks */
+		.xgrid,.ygrid line { fill: none; stroke: #eeeeee; }
 
 		.line { fill: none;
 						stroke: steelblue;
@@ -41,11 +44,12 @@
 
 		var xScale = d3.time.scale()
 												.domain([minDate,maxDate])
-												.nice()
-									      .range([0, svgWidth]);
+									      .range([0, svgWidth])
 		var yScale = d3.scale.linear()
 												.domain([minPrice, maxPrice])
-												.range([svgHeight, 0]);
+												.range([svgHeight, 0])
+												.nice();
+
 		var xAxis = d3.svg.axis()
 											.scale(xScale)
 											.orient("bottom")
@@ -64,9 +68,6 @@
 				.y(function(d) { return yScale(d['Adj Close']); })
 				.interpolate("linear");
 
-		var lineGraph = svg.append("path")
-											 .attr("class", "line")
-											 .attr("d", line(dataset))
 
 		svg.append("g")
 			 .attr("class", "x axis")
@@ -74,12 +75,32 @@
 			 .call(xAxis)
 			 .selectAll("text")
 			 .style("text-anchor", "end")
-			 .attr("transform", "rotate(-65)");
+			 .attr("transform", "rotate(-65)")
 
 		svg.append("g")
 			 .attr("class", "y axis")
-			 .call(yAxis);
+			 .call(yAxis)
+			 .append("text").attr("text-anchor","end")
+											.attr("dy", "1em")
+											.attr("transform", "rotate(-90)")
+											.text("Price ($)");
 
+		var xGrid = svg.append("g")
+			 .attr("class", "xgrid")
+			 .call(xAxis.tickSize(svgHeight,0,0).tickFormat(""));
+
+		var yGrid = svg.append("g")
+			 .attr("class", "ygrid")
+			 .call(yAxis.tickSize(-svgWidth,0,0).tickFormat(""));
+
+		// Hide the first grid line on each axis.
+		// They were covering up the axis lines
+		xGrid.select(".tick").attr("visibility", "hidden");
+		yGrid.select(".tick").attr("visibility", "hidden");
+
+		var lineGraph = svg.append("path")
+											 .attr("class", "line")
+											 .attr("d", line(dataset))
 
 		</script>
 </html>
