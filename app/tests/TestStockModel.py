@@ -4,8 +4,8 @@ from types import NoneType
 import datetime as dt
 from pandas import Timestamp, DataFrame, Series
 from pandas.util.testing import assert_frame_equal
-import pandas as pd
 import pickle
+from app import myApp
 from app.models import Stock
 import unittest
 
@@ -26,19 +26,17 @@ class TestStockModel(unittest.TestCase):
 		self.failUnless(isinstance(self.stock.end, dt.date))
 		self.failUnless(isinstance(self.stock.data, DataFrame))
 
-	#	Don't test these all the time. It actually calls out to Yahoo and
-	#	says "Hello? I would like some stock data, please."
-
+	# This function throws an error when not run from inside the app/ directory...
+	# need to figure that one out...
 	def validate_test_data(self):
 		self.stock = Stock("tsla")
 		start = dt.date(2014, 02, 24)
 		end = dt.date(2014, 02, 28)
 		data_from_yahoo = self.stock.get_data(start, end)
-		print os.getcwd()
-		tsla_file = open('tests/tsla_1week_20140224_20140228.pkl', 'r')
+		tsla_file = open(os.path.join(myApp.root_path,'tests/tsla_1week_20140224_20140228.pkl'), 'r')
 		up = pickle.Unpickler(tsla_file)
 		data_from_file = up.load()
-		self.failUnless(assert_frame_equal(data_from_file,data_from_yahoo) is None)
+		assert_frame_equal(data_from_file, data_from_yahoo)
 
 	# Should return a valid DataFrame
 	def test_valid_stock(self):
