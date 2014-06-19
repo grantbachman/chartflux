@@ -26,13 +26,12 @@ def show_stock():
     error = "Invalid ticker symbol."
     return render_template('index.html', error = error)
   else:
-    end = dt.date.today()
-    td = getTimeDelta(value,unit)
-    start = end - td
-    stock.set_data(start, end)
+    stock.set_data()
+    stock.calc_sma_20()
+    stock.calc_sma_50()
+    stock.calc_sma_200()
     format_data = stock.data.reset_index()  # DateTimeIndex to column
     format_data = format_data.to_json(date_format='iso', orient='records')
-
     # Markup tells jinja2 that the object is safe for rendering, without
     # escaping the quotes (caused problems when creating JSON object).
     format_data = Markup(format_data)

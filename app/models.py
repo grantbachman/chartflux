@@ -1,7 +1,7 @@
 import datetime
-from pandas import DataFrame
+from pandas import DataFrame, rolling_mean
 from pandas.io.data import DataReader
-from app import myApp
+#from app import myApp
 import os
 
 
@@ -16,6 +16,11 @@ class Stock:
 	start - The start date of the stock's data
 	end - The end date of the stock's data
 	data - The Pandas Dataframe containing the stock's data
+	show_from - the starting date to show the data.
+	- Why this is needed: in order to display a stock's moving average, there
+				there would be no moving average value until the number of days for
+				which the average is comprised is met. e.g. 200 day moving average needs
+				200 days worth of prior data to have a non-zero value.
 	'''
 
 	def __init__(self, ticker):
@@ -27,8 +32,19 @@ class Stock:
 		else:
 			self.is_valid = False
 
+	def calc_sma_20(self):
+		self.data['sma20'] = rolling_mean(self.data['Adj Close'], 20)
+
+	def calc_sma_50(self):
+		self.data['sma50'] = rolling_mean(self.data['Adj Close'], 50)
+
+	def calc_sma_200(self):
+		self.data['sma200'] = rolling_mean(self.data['Adj Close'], 200)
+
 	def get_name_and_exchange(self):
-		symbol_file_path = os.path.join(myApp.root_path,'static/symbols.txt')
+		# need to figure out how to get the root path of the app without importing
+		# it, because this won't work on other machines, obviously.
+		symbol_file_path = '/Users/grant/Code/python/chartflux/app/static/symbols.txt'
 		with open(symbol_file_path, 'r') as inFile:
 				for line in inFile:
 					split = line.strip('\n').split('\t')
@@ -36,24 +52,18 @@ class Stock:
 						return (split[2], split[0])
 		return None
 
-
-	# Set's a stock's data without returning anything
-	def set_data(self, start=datetime.date.today() - datetime.timedelta(days=1),
-										 end=datetime.date.today()):
-		self.start = start
-		self.end = end
-		self.data = self.get_data(start, end)
-
-	# return either the stock data or None
-	# if nothing is passed, it just grabs yesterday's data
-	def get_data(self, start=datetime.date.today() - datetime.timedelta(days=1),
-										 end=datetime.date.today()):
+	def set_data(self):
+		display_days = 2 * 365	# 2 years
+		lookback_days = display_days + 365 # calculating 200 day moving average
+		self.end = datetime.date.today()
+		self.start = self.end - datetime.timedelta(days = lookback_days)
+		self.display_start_date = self.end - datetime.timedelta(days = display_days)
 		try:
-			data = DataReader(self.ticker, "yahoo", start, end)
+			data = DataReader(self.ticker, "yahoo", self.start, self.end)
 		except:	   # stock data not retrieved
 			data = None
 		if isinstance(data, DataFrame):
-			return data
+			self.data = data
+			self.is_valid = True
 		else:
-			self.data, self.start, self.end = None, None, None
-			return None
+			self.is_valid = False
