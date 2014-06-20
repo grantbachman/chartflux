@@ -42,9 +42,7 @@ class Stock:
 		self.data['sma200'] = rolling_mean(self.data['Adj Close'], 200)
 
 	def get_name_and_exchange(self):
-		# need to figure out how to get the root path of the app without importing
-		# it, because this won't work on other machines, obviously.
-		symbol_file_path = '/Users/grant/Code/python/chartflux/app/static/symbols.txt'
+		symbol_file_path = os.path.join(os.path.dirname(__file__),'static/symbols.txt')
 		with open(symbol_file_path, 'r') as inFile:
 				for line in inFile:
 					split = line.strip('\n').split('\t')
