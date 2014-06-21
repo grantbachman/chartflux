@@ -46,6 +46,19 @@ class TestStockModel(unittest.TestCase):
 		self.failUnless(isinstance(stock.data, DataFrame))
 		self.failIf(stock.is_valid is not True)
 
+	def test_calc_has_NaN(self):
+		stock = Stock("AMZN")
+		stock.set_data()
+		stock.calc_sma20()
+		assert(stock.data.isnull().any().any() == True)
+
+	def test_clear_NaN(self):
+		stock = Stock("AMZN")
+		stock.set_data()
+		stock.calc_all()
+		print stock.data.isnull().any()
+		assert(stock.data.isnull().any().any() == False)
+
 def main():
 	unittest.main()
 

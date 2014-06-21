@@ -1,7 +1,6 @@
 import datetime
 from pandas import DataFrame, rolling_mean
 from pandas.io.data import DataReader
-#from app import myApp
 import os
 
 
@@ -32,14 +31,23 @@ class Stock:
 		else:
 			self.is_valid = False
 
-	def calc_sma_20(self):
+	def calc_sma20(self):
 		self.data['sma20'] = rolling_mean(self.data['Adj Close'], 20)
 
-	def calc_sma_50(self):
+	def calc_sma50(self):
 		self.data['sma50'] = rolling_mean(self.data['Adj Close'], 50)
 
-	def calc_sma_200(self):
+	def calc_sma200(self):
 		self.data['sma200'] = rolling_mean(self.data['Adj Close'], 200)
+
+	def calc_all(self):
+		self.calc_sma20()
+		self.calc_sma50()
+		self.calc_sma200()
+		self.clear_NaN()
+
+	def clear_NaN(self):
+		self.data.dropna(0,'any',None,None,True)
 
 	def get_name_and_exchange(self):
 		symbol_file_path = os.path.join(os.path.dirname(__file__),'static/symbols.txt')

@@ -21,11 +21,11 @@
 		}
 
 		.sma20line { fill: none;
-						stroke: orange;
+						stroke: green;
 						stroke-width: .5px;
 		}
 		.sma50line { fill: none;
-						stroke: green;
+						stroke: orange;
 						stroke-width: .5px;
 		}
 		.sma200line { fill: none;
@@ -131,7 +131,7 @@
 		yGrid.select(".tick").attr("visibility", "hidden");
 
 		svg.append("path").attr("class", "priceline")
-										  .attr("data-legend", 'Price')
+										  .attr("data-legend", '{{ stock.ticker }}')
 											.attr("d", priceline(dataset))
 
 		svg.append("path").attr("class", "sma20line")

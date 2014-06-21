@@ -27,9 +27,7 @@ def show_stock():
     return render_template('index.html', error = error)
   else:
     stock.set_data()
-    stock.calc_sma_20()
-    stock.calc_sma_50()
-    stock.calc_sma_200()
+    stock.calc_all()
     format_data = stock.data.reset_index()  # DateTimeIndex to column
     format_data = format_data.to_json(date_format='iso', orient='records')
     # Markup tells jinja2 that the object is safe for rendering, without
