@@ -10,10 +10,11 @@
 		<style>
 
 	  .axis path { fill: none; stroke: black; }  /* border */
-		.xgrid,.ygrid path { fill: none; stroke: black; }
-
 		.axis line { fill: none; stroke: black; }  /* tick marks */
-		.xgrid,.ygrid line { fill: none; stroke: #eeeeee; }
+		.grid path { fill: none; stroke: black; }
+		.grid line { fill: none; stroke: #eeeeee; }
+
+		/*.xgrid,.ygrid line { fill: none; stroke: #eeeeee; }*/
 
 		.priceline { fill: none;
 						stroke: steelblue;
@@ -62,16 +63,15 @@
 
 		var xScale = d3.time.scale()
 												.domain([minDate,maxDate])
-									      .range([0, svgWidth])
+									      .range([0, svgWidth]);
+		var xAxis = d3.svg.axis()
+											.scale(xScale)
+											.orient("bottom");
+
 		var yScale = d3.scale.linear()
 												.domain([minPrice, maxPrice])
 												.range([svgHeight, 0])
 												.nice();
-
-		var xAxis = d3.svg.axis()
-											.scale(xScale)
-											.orient("bottom")
-
 		var yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 		var svg = d3.select("body").append("svg")
@@ -81,6 +81,38 @@
 							  .attr("transform", "translate(" + margin.left + ","
 																							  + margin.right + ")")
 
+		svg.append("g")
+			 .attr("class", "x axis")
+			 .attr("transform", "translate(0," + svgHeight + ")")
+			 .call(xAxis)
+			 .selectAll("text")
+			 .style("text-anchor", "end")
+			 .attr("transform", "rotate(-65)");
+
+		var xGrid = svg.append("g")
+			 .attr("class", "x grid")
+			 .call(xAxis.tickSize(svgHeight,0,0).tickFormat(""))
+
+
+		function currencyFormat(d){
+		if (d < 10) { return d3.format("$.2f")(d) }
+		else { return d3.format("$.0f")(d) }
+		}
+
+		svg.append("g")
+			 .attr("class", "y axis")
+			 .call(yAxis.tickFormat(function(d) { return currencyFormat(d); }));
+
+
+		var yGrid = svg.append("g")
+			 .attr("class", "y grid")
+			 .call(yAxis.tickSize(-svgWidth,0,0).tickFormat(""));
+
+		// Hide the first grid line on each axis.
+-   // They were covering up the axis lines
+		xGrid.select(".tick").attr("visibility", "hidden");
+		yGrid.select(".tick").attr("visibility", "hidden");
+		
 		var priceline = d3.svg.line()
 				.x(function(d) { return xScale(parseDate(d['Date'])); })
 				.y(function(d) { return yScale(d['Adj Close']); })
@@ -101,35 +133,6 @@
 				.y(function(d) { return yScale(d['sma200']); })
 				.interpolate("linear");
 
-		svg.append("g")
-			 .attr("class", "x axis")
-			 .attr("transform", "translate(0," + svgHeight + ")")
-			 .call(xAxis)
-			 .selectAll("text")
-			 .style("text-anchor", "end")
-			 .attr("transform", "rotate(-65)")
-
-		svg.append("g")
-			 .attr("class", "y axis")
-			 .call(yAxis)
-			 .append("text").attr("text-anchor","end")
-											.attr("dy", "1em")
-											.attr("transform", "rotate(-90)")
-											.text("Price ($)");
-
-		var xGrid = svg.append("g")
-			 .attr("class", "xgrid")
-			 .call(xAxis.tickSize(svgHeight,0,0).tickFormat(""));
-
-		var yGrid = svg.append("g")
-			 .attr("class", "ygrid")
-			 .call(yAxis.tickSize(-svgWidth,0,0).tickFormat(""));
-
-		// Hide the first grid line on each axis.
-		// They were covering up the axis lines
-		xGrid.select(".tick").attr("visibility", "hidden");
-		yGrid.select(".tick").attr("visibility", "hidden");
-
 		svg.append("path").attr("class", "priceline")
 										  .attr("data-legend", '{{ stock.ticker }}')
 											.attr("d", priceline(dataset))
@@ -144,7 +147,9 @@
 										  .attr("data-legend", '200 Day SMA')
 											.attr("d", sma200line(dataset))
 
-		svg.append("g").attr("class", "legend").attr("transform", "translate(50,30)").call(d3.legend)
+		svg.append("g").attr("class", "legend")
+									 .attr("transform", "translate(50,30)")
+									 .call(d3.legend)
 
 		</script>
 </html>
