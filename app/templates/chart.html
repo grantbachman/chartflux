@@ -112,7 +112,7 @@
 -   // They were covering up the axis lines
 		xGrid.select(".tick").attr("visibility", "hidden");
 		yGrid.select(".tick").attr("visibility", "hidden");
-		
+
 		var priceline = d3.svg.line()
 				.x(function(d) { return xScale(parseDate(d['Date'])); })
 				.y(function(d) { return yScale(d['Adj Close']); })
@@ -135,16 +135,20 @@
 
 		svg.append("path").attr("class", "priceline")
 										  .attr("data-legend", '{{ stock.ticker }}')
+											.attr("data-legend-pos",1)
 											.attr("d", priceline(dataset))
 
 		svg.append("path").attr("class", "sma20line")
 										  .attr("data-legend", '20 Day SMA')
+											.attr("data-legend-pos",2)
 											.attr("d", sma20line(dataset))
 		svg.append("path").attr("class", "sma50line")
 										  .attr("data-legend", '50 Day SMA')
+											.attr("data-legend-pos",3)
 											.attr("d", sma50line(dataset))
 		svg.append("path").attr("class", "sma200line")
 										  .attr("data-legend", '200 Day SMA')
+											.attr("data-legend-pos",4)
 											.attr("d", sma200line(dataset))
 
 		svg.append("g").attr("class", "legend")
