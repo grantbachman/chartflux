@@ -16,10 +16,12 @@ class TestStockModel(unittest.TestCase):
 		self.failIf(self.stock.ticker != "TSLA")
 		self.failIf(self.stock.is_valid is not True)
 		self.failUnless(self.stock.is_valid is True)
+		assert(self.stock.data is not None)
 
 	def test_init_fail(self):
 		self.stock = Stock("adsfadf")
 		assert(self.stock.is_valid is False)
+		assert(self.stock.data is None)
 
 	def test_get_name_and_exchange_is_success(self):
 		self.stock = Stock("GOOG")
@@ -35,26 +37,27 @@ class TestStockModel(unittest.TestCase):
 
 	def test_set_data(self):
 		self.stock = Stock("tsla")
-		self.stock.set_data()
 		self.failUnless(isinstance(self.stock.data, DataFrame))
 
 	# Should return a valid DataFrame
 	def test_valid_stock(self):
 		stock = Stock("TSLA")
-		stock.set_data()
 		self.failIf(stock.data is None)
 		self.failUnless(isinstance(stock.data, DataFrame))
 		self.failIf(stock.is_valid is not True)
 
+	def test_implicit_column_name_create(self):
+		stock = Stock("TSLA")
+		stock.calc_sma(20)
+		assert(isinstance(stock.data['sma20'], Series))
+
 	def test_calc_has_NaN(self):
 		stock = Stock("AMZN")
-		stock.set_data()
-		stock.calc_sma20()
+		stock.calc_sma(20)
 		assert(stock.data.isnull().any().any() == True)
 
 	def test_clear_NaN(self):
 		stock = Stock("AMZN")
-		stock.set_data()
 		stock.calc_all()
 		print stock.data.isnull().any()
 		assert(stock.data.isnull().any().any() == False)

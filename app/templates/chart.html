@@ -53,7 +53,7 @@
 		var svgWidth = 700 - margin.left - margin.right;
 		var svgHeight = 500 - margin.top - margin.bottom;
 		var parseDate = d3.time.format.iso.parse;
-
+		var ticker = '{{ stock.ticker }}'
 		var dataset = JSON.parse('{{ data }}');
 
 		var minDate = parseDate(dataset[0]['Date']);
@@ -61,17 +61,11 @@
 		var minPrice = d3.min(dataset, function(obj) { return obj['Adj Close']; });
 		var maxPrice = d3.max(dataset, function(obj) { return obj['Adj Close']; });
 
-		var xScale = d3.time.scale()
-												.domain([minDate,maxDate])
-									      .range([0, svgWidth]);
-		var xAxis = d3.svg.axis()
-											.scale(xScale)
-											.orient("bottom");
+		var xScale = d3.time.scale().domain([minDate,maxDate]).range([0, svgWidth]);
+		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 
 		var yScale = d3.scale.linear()
-												.domain([minPrice, maxPrice])
-												.range([svgHeight, 0])
-												.nice();
+									 .domain([minPrice, maxPrice]).range([svgHeight, 0]).nice();
 		var yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 		var svg = d3.select("body").append("svg")
@@ -98,7 +92,6 @@
 		if (d < 10) { return d3.format("$.2f")(d) }
 		else { return d3.format("$.0f")(d) }
 		}
-
 		svg.append("g")
 			 .attr("class", "y axis")
 			 .call(yAxis.tickFormat(function(d) { return currencyFormat(d); }));
@@ -113,43 +106,26 @@
 		xGrid.select(".tick").attr("visibility", "hidden");
 		yGrid.select(".tick").attr("visibility", "hidden");
 
-		var priceline = d3.svg.line()
-				.x(function(d) { return xScale(parseDate(d['Date'])); })
-				.y(function(d) { return yScale(d['Adj Close']); })
-				.interpolate("linear");
+		function createAndAppendLine(column, legendName, lineClass, linePos){
+			if (typeof dataset[0][column] === 'undefined') {
+					return;
+			} else {
+					var line = d3.svg.line()
+								 .x(function(d) { return xScale(parseDate(d['Date'])); })
+								 .y(function(d) { return yScale(d[column]); })
+								 .interpolate("linear");
+					svg.append("path").attr("class", lineClass)
+										  			.attr("data-legend", legendName)
+														.attr("data-legend-pos", linePos)
+														.attr("d",line(dataset))
 
-		var sma20line = d3.svg.line()
-				.x(function(d) { return xScale(parseDate(d['Date'])); })
-				.y(function(d) { return yScale(d['sma20']); })
-				.interpolate("linear");
+			}
+		}
 
-		var sma50line = d3.svg.line()
-				.x(function(d) { return xScale(parseDate(d['Date'])); })
-				.y(function(d) { return yScale(d['sma50']); })
-				.interpolate("linear");
-
-		var sma200line = d3.svg.line()
-				.x(function(d) { return xScale(parseDate(d['Date'])); })
-				.y(function(d) { return yScale(d['sma200']); })
-				.interpolate("linear");
-
-		svg.append("path").attr("class", "priceline")
-										  .attr("data-legend", '{{ stock.ticker }}')
-											.attr("data-legend-pos",1)
-											.attr("d", priceline(dataset))
-
-		svg.append("path").attr("class", "sma20line")
-										  .attr("data-legend", '20 Day SMA')
-											.attr("data-legend-pos",2)
-											.attr("d", sma20line(dataset))
-		svg.append("path").attr("class", "sma50line")
-										  .attr("data-legend", '50 Day SMA')
-											.attr("data-legend-pos",3)
-											.attr("d", sma50line(dataset))
-		svg.append("path").attr("class", "sma200line")
-										  .attr("data-legend", '200 Day SMA')
-											.attr("data-legend-pos",4)
-											.attr("d", sma200line(dataset))
+		createAndAppendLine('Adj Close', ticker, 'priceline', 1);
+		createAndAppendLine('sma20', '20 Day SMA', 'sma20line', 2);
+		createAndAppendLine('sma50', '50 Day SMA', 'sma50line', 3);
+		createAndAppendLine('sma200', '200 Day SMA', 'sma200line', 4);
 
 		svg.append("g").attr("class", "legend")
 									 .attr("transform", "translate(50,30)")

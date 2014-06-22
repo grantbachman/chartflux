@@ -15,7 +15,6 @@ class Stock:
 	start - The start date of the stock's data
 	end - The end date of the stock's data
 	data - The Pandas Dataframe containing the stock's data
-	show_from - the starting date to show the data.
 	- Why this is needed: in order to display a stock's moving average, there
 				there would be no moving average value until the number of days for
 				which the average is comprised is met. e.g. 200 day moving average needs
@@ -28,22 +27,25 @@ class Stock:
 		if name_exchange_tuple is not None:
 			self.name, self.exchange = name_exchange_tuple
 			self.is_valid = True
+			self.set_data()
 		else:
 			self.is_valid = False
+			self.data = None
 
-	def calc_sma20(self):
-		self.data['sma20'] = rolling_mean(self.data['Adj Close'], 20)
+	def calc_sma(self, num_days, column_title=None):
+		# Check that there are enough rows to be able to calculate a non-Nan value
+		if self.data.shape[0] > num_days:
+				column_title = 'sma' + str(num_days) if column_title is None else column_title
+				self.data[column_title] = rolling_mean(self.data['Adj Close'], num_days)
 
-	def calc_sma50(self):
-		self.data['sma50'] = rolling_mean(self.data['Adj Close'], 50)
-
-	def calc_sma200(self):
-		self.data['sma200'] = rolling_mean(self.data['Adj Close'], 200)
+		# Check that there are enough rows to be able to calculate a non-Nan value
+		if self.data.shape[0] > 50:
+			self.data['sma50'] = rolling_mean(self.data['Adj Close'], 50)
 
 	def calc_all(self):
-		self.calc_sma20()
-		self.calc_sma50()
-		self.calc_sma200()
+		self.calc_sma(20)
+		self.calc_sma(50)
+		self.calc_sma(200)
 		self.clear_NaN()
 
 	def clear_NaN(self):
