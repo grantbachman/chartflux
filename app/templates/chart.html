@@ -58,8 +58,8 @@
 
 		var minDate = parseDate(dataset[0]['Date']);
 		var maxDate = parseDate(dataset[dataset.length - 1]['Date']);
-		var minPrice = d3.min(dataset, function(obj) { return obj['Adj Close']; });
-		var maxPrice = d3.max(dataset, function(obj) { return obj['Adj Close']; });
+		var minPrice = d3.min(dataset, function(obj) { return d3.min([obj['Adj Close'],obj['sma20'],obj['sma50'],obj['sma200']]);});
+		var maxPrice = d3.max(dataset, function(obj) { return d3.max([obj['Adj Close'],obj['sma20'],obj['sma50'],obj['sma200']]);});
 
 		var xScale = d3.time.scale().domain([minDate,maxDate]).range([0, svgWidth]);
 		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");

@@ -26,7 +26,6 @@ def show_stock():
     error = "Invalid ticker symbol."
     return render_template('index.html', error = error)
   else:
-    stock.set_data()
     stock.calc_all()
     format_data = stock.data.reset_index()  # DateTimeIndex to column
     format_data = format_data.to_json(date_format='iso', orient='records')
