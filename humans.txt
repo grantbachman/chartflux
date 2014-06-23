@@ -1,0 +1,17 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+Name: Grant David Bachman
+Twitter: @wowgdb
+From: Pittsburgh, Pennsylvania
+
+
+# THANKS
+
+  <name>
+
+# TECHNOLOGY COLOPHON
+
+  HTML5, CSS3, Python, Flask, d3.js
