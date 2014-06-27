@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+		<h3 style="text-align: center">{{ stock.name }}</h3>
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/d3.v3.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/d3.legend.js') }}"></script>
 		<style>
@@ -37,7 +38,7 @@
 		</style>
 		<script type="text/javascript">
 		var margin = {top: 20, bottom: 50, left: 50, right: 20}
-		var svgWidth = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+		var svgWidth = (window.innerWidth > 0 && window.innerWidth < 750) ? window.innerWidth : screen.width;
 		var svgWidth = svgWidth - margin.left - margin.right;
 		var svgHeight = svgWidth*.75 - margin.top - margin.bottom;
 		var parseDate = d3.time.format.iso.parse;
