@@ -32,7 +32,7 @@ d3.legend = function(g) {
         .call(function(d) { d.exit().remove()})
         .attr("y",function(d,i) { return i+"em"})
         .attr("x","1em")
-        .text(function(d) { ;return d.key})
+        .text(function(d) { return d.key})
 
     li.selectAll("circle")
         .data(items,function(d) { return d.key})

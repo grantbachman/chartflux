@@ -37,8 +37,9 @@
 		</style>
 		<script type="text/javascript">
 		var margin = {top: 20, bottom: 50, left: 50, right: 20}
-		var svgWidth = 700 - margin.left - margin.right;
-		var svgHeight = 500 - margin.top - margin.bottom;
+		var svgWidth = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+		var svgWidth = svgWidth - margin.left - margin.right;
+		var svgHeight = svgWidth*.75 - margin.top - margin.bottom;
 		var parseDate = d3.time.format.iso.parse;
 		var ticker = '{{ stock.ticker }}'
 		var dataset = JSON.parse('{{ data }}');
@@ -55,7 +56,7 @@
 									 .domain([minPrice, maxPrice]).range([svgHeight, 0]).nice();
 		var yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-		var svg = d3.select("body").append("svg")
+		var svg = d3.select("main").append("svg")
 								.attr("width", svgWidth + margin.left + margin.right)
 								.attr("height", svgHeight + margin.left + margin.bottom)
 				  			.append("g")
