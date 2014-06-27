@@ -11,11 +11,6 @@ from flask import render_template, url_for, redirect, request, flash,\
 def index():
   return render_template('index.html')
 
-@myApp.route('/d3')
-def d3():
-  return render_template('d3.html')
-
-
 @myApp.route('/chart')
 def show_stock():
   stock = request.args.get('ticker')

@@ -1,10 +1,5 @@
-<html>
-	<head>
-		{% if title %}
-		<title>{{ title }}</title>
-		{% else %}
-		<title>Welcome to Chartflux!</title>
-		{% endif %}
+{% extends "layout.html" %}
+{% block body %}
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/d3.v3.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/d3.legend.js') }}"></script>
 		<style>
@@ -40,14 +35,6 @@
 		}
 
 		</style>
-	</head>
-	<body>
-		<b>{{ stock.name }}</b><br />
-		From: {{ stock.start }}<br />
-		To: {{ stock.end }}<br />
-		<br />
-	</body>
-
 		<script type="text/javascript">
 		var margin = {top: 20, bottom: 50, left: 50, right: 20}
 		var svgWidth = 700 - margin.left - margin.right;
@@ -132,4 +119,4 @@
 									 .call(d3.legend)
 
 		</script>
-</html>
+{% endblock %}
