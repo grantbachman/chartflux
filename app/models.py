@@ -61,7 +61,7 @@ class Stock:
 		return None
 
 	def set_data(self):
-		display_days = 2 * 365	# 2 years
+		display_days = 2 * 365	# 5 years
 		lookback_days = display_days + 365 # calculating 200 day moving average
 		self.end = datetime.date.today()
 		self.start = self.end - datetime.timedelta(days = lookback_days)

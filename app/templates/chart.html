@@ -2,60 +2,15 @@
 {% block body %}
 		<script type="text/javascript" src=	"{{ url_for('static', filename='scripts/d3.v3.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/nv.d3.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='scripts/chart.js') }}"></script>
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/nv.d3.css') }}" />
 		<div id="chart">
 		<h3 style="text-align: center">{{ stock.name }}</h3>
 		<svg style="height: 500px"></svg>
 		<script>
-		var ticker = '{{ stock.ticker }}'
-		var importData = JSON.parse('{{ data }}');
-		var parseDate = d3.time.format.iso.parse;
-		var dataset = []
-		// COLIN are the possible columns that can exist
-		var COLIN = ["Adj Close","sma20","sma50","sma200"]
-		// COLOUT are the display names of the possible columns
-		var COLOUT = [ticker,"SMA 20","SMA 50","SMA 200"]
-		// lineLabelsIn/Out are arrays containing the LINESPACEIN/OUT columns
-		// that actually exist in the data
-		var lineLabelsIn = [], lineLabelsOut = [];
-		for (var i = 0; i < COLIN.length; i++){
-			if (COLIN[i] in importData[0]){
-				lineLabelsIn.push(COLIN[i])
-				lineLabelsOut.push(COLOUT[i])
-			}
-		}
-
-		for (var i = 0; i < lineLabelsIn.length; i++){
-			var key = lineLabelsOut[i]
-			dataset[i] = {};
-			dataset[i]['key'] = key;
-			dataset[i]['values'] = [];
-			for (var j = 0; j < importData.length; j++){
-				var date = importData[j]['Date'];
-				var price = importData[j][lineLabelsIn[i]];
-				dataset[i]['values'][j] = {};
-				dataset[i]['values'][j]['x'] = parseDate(date);
-				dataset[i]['values'][j]['y'] = price;
-			};
-		};
-
-		nv.addGraph(function(){
-				var chart = nv.models.lineWithFocusChart();
-				chart.xAxis.tickFormat(function(d){ return d3.time.format('%b %e, %Y')(new Date(d))});
-  			chart.yAxis.tickFormat(d3.format(',.2f'));
-				chart.x2Axis.tickFormat(function(d){ return d3.time.format('%B %Y')(new Date(d))});
-				chart.y2Axis.tickFormat(d3.format('0f'));
-
-			  d3.select('#chart svg')
-	      	.datum(dataset)
-			    .transition().duration(500)
-			    .call(chart);
-
-			  nv.utils.windowResize(chart.update);
-
-  return chart;
-})
-
+			var ticker = '{{ stock.ticker }}'
+			var importData = JSON.parse('{{ data }}');
+			var dataset = generateChart(ticker,importData);
 		</script>
 	</div>
 {% endblock %}
