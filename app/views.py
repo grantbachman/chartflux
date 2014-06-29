@@ -30,11 +30,11 @@ def show_stock():
     # need to redirect instead
     return render_template('chart.html', stock=stock, data=format_data)
 
-def getTimeDelta(value=2, unit="years"):
+def getTimeDelta(value=3, unit="years"):
   try:
     value = float(value)
   except:
-    value = 2
+    value = 3 
   if unit == "days":
     return dt.timedelta(days = int(value))
   elif unit == "weeks":

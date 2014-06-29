@@ -32,7 +32,7 @@ function generateChart(ticker, importData){
 
   nv.addGraph(function(){
     var colors = ['royalblue', 'green', 'orange', 'red'];
-    var chart = nv.models.lineWithFocusChart().color(colors)
+    var chart = nv.models.lineWithFocusChart().color(colors).interpolate("basis");
 
     chart.xAxis.tickFormat(function(d){ return d3.time.format('%b %e, %Y')(new Date(d))});
     chart.yAxis.tickFormat(d3.format(',.2f'));
@@ -57,7 +57,7 @@ function deltaMonth(date, months){
 window.onload = function() {
   var datasetLen = dataset[0]['values'].length
   var focusEnd = dataset[0]['values'][datasetLen - 1]['x']
-  var focusStart = deltaMonth(focusEnd, -6) // 6 months ago
+  var focusStart = deltaMonth(focusEnd, -12) // 1 year ago
 
   var chart = nv.graphs[0];
   chart.brushExtent([focusStart, focusEnd]);
