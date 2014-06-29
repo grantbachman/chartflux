@@ -32,7 +32,18 @@ function generateChart(ticker, importData){
 
   nv.addGraph(function(){
     var colors = ['royalblue', 'green', 'orange', 'red'];
-    var chart = nv.models.lineWithFocusChart().color(colors).interpolate("basis");
+    var datasetLen = dataset[0]['values'].length
+    var focusEnd = dataset[0]['values'][datasetLen - 1]['x']
+    var focusStart = deltaMonth(focusEnd, -12) // 1 year ago
+
+    var chart = nv.models.lineWithFocusChart()
+                  .color(colors)
+                  .interpolate("basis")
+                  .brushExtent([focusStart,focusEnd])
+                  .tooltipContent(function(key, x, y, e, graph) {
+                                    return '<h3>' + key + '</h3>'
+                                            + '<p>$' +  y + ' on ' + x + '</p>'
+                                  });
 
     chart.xAxis.tickFormat(function(d){ return d3.time.format('%b %e, %Y')(new Date(d))});
     chart.yAxis.tickFormat(d3.format(',.2f'));
@@ -47,19 +58,8 @@ function generateChart(ticker, importData){
   return dataset;
 };
 
-
 function deltaMonth(date, months){
   var returnDate = new Date();
   returnDate.setMonth(date.getMonth() + months);
   return returnDate;
-};
-
-window.onload = function() {
-  var datasetLen = dataset[0]['values'].length
-  var focusEnd = dataset[0]['values'][datasetLen - 1]['x']
-  var focusStart = deltaMonth(focusEnd, -12) // 1 year ago
-
-  var chart = nv.graphs[0];
-  chart.brushExtent([focusStart, focusEnd]);
-  chart.update();
 };
