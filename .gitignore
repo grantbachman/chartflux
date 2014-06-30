@@ -1,5 +1,6 @@
 env
 app/templates/d3.html
+Highstock/
 instance/
 node_modules/
 gulpfile.js
