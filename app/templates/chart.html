@@ -6,7 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/nv.d3.css') }}" />
 		<div id="chart">
 		<h3 style="text-align: center">{{ stock.name }}</h3>
-		<svg style="height: 500px"></svg>
+		<svg style="min-height: 75%"></svg>
 		<script>
 			var ticker = '{{ stock.ticker }}'
 			var importData = JSON.parse('{{ data }}');
