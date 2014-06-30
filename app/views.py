@@ -23,7 +23,7 @@ def show_stock():
   else:
     stock.calc_all()
     format_data = stock.data.reset_index()  # DateTimeIndex to column
-    format_data = format_data.to_json(date_format='iso', orient='records')
+    format_data = format_data.to_json(date_format='epoch', orient='records')
     # Markup tells jinja2 that the object is safe for rendering, without
     # escaping the quotes (caused problems when creating JSON object).
     format_data = Markup(format_data)
@@ -34,7 +34,7 @@ def getTimeDelta(value=3, unit="years"):
   try:
     value = float(value)
   except:
-    value = 3 
+    value = 3
   if unit == "days":
     return dt.timedelta(days = int(value))
   elif unit == "weeks":

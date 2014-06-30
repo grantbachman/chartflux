@@ -1,16 +1,32 @@
 {% extends "layout.html" %}
 {% block body %}
-		<script type="text/javascript" src=	"{{ url_for('static', filename='scripts/d3.v3.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('static', filename='scripts/nv.d3.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/chart.js') }}"></script>
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/nv.d3.css') }}" />
-		<div id="chart">
-		<h3 style="text-align: center">{{ stock.name }}</h3>
-		<svg style="min-height: 75%"></svg>
+		<script src="{{ url_for('static', filename='scripts/jquery-1.11.1.min.js')}}"></script>
+		<script src="{{ url_for('static', filename='scripts/highstock.js')}}"></script>
+		<div id="chart" style="min-height:50%; width:75%">
+		</div>
 		<script>
-			var ticker = '{{ stock.ticker }}'
+			var ticker = '{{ stock.ticker }}';
+			var company_name = '{{ stock.name }}';
 			var importData = JSON.parse('{{ data }}');
-			var dataset = generateChart(ticker,importData);
+			var dataset = [];
+			for (var i=0; i < importData.length; i++){
+				var tmp = [importData[i]['Date'], importData[i]['Adj Close']]
+				dataset.push(tmp);
+			}
+			$(function(){
+				$('#chart').highcharts('StockChart', {
+								rangeSelector : {
+								selected : 1,
+								inputEnabled: $('#chart').width() > 480
+							},
+							title : { text : company_name },
+							series : [{
+								name : ticker,
+								data : dataset,
+								tooltip: { valueDecimals: 2 }
+							}]
+						})
+			});
 		</script>
-	</div>
 {% endblock %}
