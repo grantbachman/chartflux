@@ -3,54 +3,13 @@
 		<script type="text/javascript" src="{{ url_for('static', filename='scripts/chart.js') }}"></script>
 		<script src="{{ url_for('static', filename='scripts/jquery-1.11.1.min.js')}}"></script>
 		<script src="{{ url_for('static', filename='scripts/highstock.js')}}"></script>
-		<div id="chart" style="min-height:50%; width:75%">
+		<script src="{{ url_for('static', filename='scripts/chart.js') }}"></script>
+		<div id="chart" style="min-height:80%; min-width:80%">
 		</div>
 		<script>
 			var ticker = '{{ stock.ticker }}';
 			var company_name = '{{ stock.name }}';
 			var importData = JSON.parse('{{ data }}');
-			var dataset = {"ohlc" : [], "Volume" : [] };
-			for (var i=0; i < importData.length; i++){
-				dataset["ohlc"].push([importData[i]["Date"],
-									 importData[i]["Open"],
-									 importData[i]["High"],
-									 importData[i]["Low"],
-									 importData[i]["Close"]]);
-				dataset["Volume"].push([importData[i]["Date"],
-																importData[i]["Volume"]]);
-			}
-			$(function(){
-				$('#chart').highcharts('StockChart', {
-							rangeSelector : { selected : 1,
-																inputEnabled: $('#chart').width() > 480
-															},
-							title : { text : company_name },
-							yAxis: [{
-								        labels: { align: 'right', x: -3 },
-								        title: { text: ticker },
-								        height: '60%',
-								        lineWidth: 2
-				    					},
-											{
-											  labels: { align: 'right', x: -3 },
-				        				title: { text: 'Volume' },
-								        top: '65%',
-								        height: '35%',
-								        offset: 0,
-								        lineWidth: 2
-											}],
-							series: [{
-								        type: 'candlestick',
-								        name: ticker,
-								        data: dataset["ohlc"]
-		    							},
-											{
-								        type: 'column',
-								        name: 'Volume',
-								        data: dataset["Volume"],
-								        yAxis: 1,
-		    							}]
-							});
-				});
+			generateChart(ticker, company_name, importData);
 		</script>
 {% endblock %}
