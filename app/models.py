@@ -1,5 +1,6 @@
 import datetime
 from pandas import DataFrame, rolling_mean
+import numpy as np
 from pandas.io.data import DataReader
 import os
 
@@ -38,15 +39,12 @@ class Stock:
 				column_title = 'sma' + str(num_days) if column_title is None else column_title
 				self.data[column_title] = rolling_mean(self.data['Adj Close'], num_days)
 
-		# Check that there are enough rows to be able to calculate a non-Nan value
-		if self.data.shape[0] > 50:
-			self.data['sma50'] = rolling_mean(self.data['Adj Close'], 50)
-
 	def calc_all(self):
 		self.calc_sma(20)
 		self.calc_sma(50)
 		self.calc_sma(200)
 		self.clear_NaN()
+		self.data = np.round(self.data,2)
 
 	def clear_NaN(self):
 		self.data.dropna(0,'any',None,None,True)

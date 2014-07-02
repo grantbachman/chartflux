@@ -4,12 +4,12 @@
 		<script src="{{ url_for('static', filename='scripts/jquery-1.11.1.min.js')}}"></script>
 		<script src="{{ url_for('static', filename='scripts/highstock.js')}}"></script>
 		<script src="{{ url_for('static', filename='scripts/chart.js') }}"></script>
-		<div id="chart" style="min-height:80%; min-width:80%">
+		<div id="chart" style="height:600px; min-width:40%">
 		</div>
 		<script>
 			var ticker = '{{ stock.ticker }}';
 			var company_name = '{{ stock.name }}';
 			var importData = JSON.parse('{{ data }}');
-			generateChart(ticker, company_name, importData);
+			generatePriceChart(ticker, company_name, importData);
 		</script>
 {% endblock %}

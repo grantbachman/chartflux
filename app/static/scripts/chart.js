@@ -1,4 +1,4 @@
-function generateChart(ticker,company_name,importData){
+function generatePriceChart(ticker,company_name,importData){
   var dataset = {"Price" : [],
                  "Volume" : [],
                  "SMA20" : [],
@@ -17,6 +17,9 @@ function generateChart(ticker,company_name,importData){
           rangeSelector : { selected : 1, inputEnabled: $('#chart').width() > 480 },
         //	chart : { height: "70%", width: "70%" },
           title : { text : company_name },
+          rangeSelector : { selected: 4 }, // Default to 1 year view
+          tooltip : {
+                    },
           yAxis: [{
                     labels: { align: 'right', x: -3 },
                     title: { text: ticker },
@@ -31,7 +34,6 @@ function generateChart(ticker,company_name,importData){
                     lineWidth: 2
                   }],
           series: [{
-                    type: 'spline',
                     name: ticker,
                     data: dataset["Price"],
                     lineWidth: 3,
@@ -39,7 +41,6 @@ function generateChart(ticker,company_name,importData){
                     zIndex: 3,
                   },
                   {
-                    type: 'spline',
                     name: 'SMA 20',
                     data: dataset["SMA20"],
                     lineWidth: 1,
@@ -47,7 +48,6 @@ function generateChart(ticker,company_name,importData){
                     zIndex: 2,
                   },
                   {
-                    type: 'spline',
                     name: 'SMA 50',
                     data: dataset["SMA50"],
                     lineWidth: 1,
@@ -55,7 +55,6 @@ function generateChart(ticker,company_name,importData){
                     zIndex: 1,
                   },
                   {
-                    type: 'spline',
                     name: 'SMA 200',
                     data: dataset["SMA200"],
                     lineWidth: 1,
