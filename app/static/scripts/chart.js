@@ -4,7 +4,9 @@ function generatePriceChart(ticker,company_name,importData){
                  "SMA20" : [],
                  "SMA50" : [],
                  "SMA200" : [],
-                 "RSI" : []
+                 "RSI" : [],
+                 "MACD": [],
+                 "MACD-Signal": []
                 };
   for (var i=0; i < importData.length; i++){
     dataset["Price"].push([importData[i]["Date"], importData[i]["Adj Close"]]);
@@ -13,6 +15,9 @@ function generatePriceChart(ticker,company_name,importData){
     dataset["SMA50"].push([importData[i]["Date"], importData[i]["sma50"]]);
     dataset["SMA200"].push([importData[i]["Date"], importData[i]["sma200"]]);
     dataset["RSI"].push([importData[i]["Date"], importData[i]["RSI"]]);
+    dataset["MACD"].push([importData[i]["Date"], importData[i]["MACD"]]);
+    dataset["MACD-Signal"].push([importData[i]["Date"], importData[i]["MACD-Signal"]]);
+
   }
   $(function(){
     $('#chart').highcharts('StockChart', {
@@ -25,19 +30,27 @@ function generatePriceChart(ticker,company_name,importData){
           yAxis: [{
                     labels: { align: 'right', x: -3 },
                     title: { text: ticker },
-                    height: '50%',
+                    height: '40%',
                   },
                   {
                     labels: { align: 'right', x: -3 },
                     title: { text: 'RSI' },
-                    top : '50%',
-                    height: '25%',
+                    top : '40%',
+                    height: '20%',
+                  },
+                  {
+                    labels: { align: 'right', x: -3 },
+                    title: { text: 'MACD' },
+                    top: '60%',
+                    height: '20%',
+                    offset: 0,
+                    lineWidth: 1
                   },
                   {
                     labels: { align: 'right', x: -3 },
                     title: { text: 'Volume' },
-                    top: '75%',
-                    height: '25%',
+                    top: '80%',
+                    height: '20%',
                     offset: 0,
                     lineWidth: 2
                   }],
@@ -73,13 +86,25 @@ function generatePriceChart(ticker,company_name,importData){
                     name: 'RSI',
                     data: dataset["RSI"],
                     lineWidth: 1,
-                    yAxis: 1,
+                    yAxis: 1
+                  },
+                  {
+                    name: 'MACD',
+                    data: dataset['MACD'],
+                    lineWidth: 1,
+                    yAxis: 2
+                  },
+                  {
+                    name: 'MACD-Signal',
+                    data: dataset['MACD-Signal'],
+                    lineWidth: 1,
+                    yAxis: 2
                   },
                   {
                     type: 'column',
                     name: 'Volume',
                     data: dataset["Volume"],
-                    yAxis: 2,
+                    yAxis: 3,
                   }]
           });
     });

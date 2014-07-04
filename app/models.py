@@ -40,23 +40,33 @@ class Stock:
 				self.data[column_title] = pd.rolling_mean(self.data['Adj Close'], num_days)
 
 	def calc_rsi(self):
-			x = self.data['Adj Close'].copy() # deep copy the data into a series
-			delta = x.diff().dropna()
-			rsiDF = pd.DataFrame({"Up" : delta, "Down" : delta})
-			rsiDF['Up'] = rsiDF['Up'][rsiDF['Up'] > 0]
-			rsiDF['Down'] = rsiDF['Down'][rsiDF['Down'] < 0]
-			rsiDF = rsiDF.fillna(value=0)
-			rsiDF['UpMean'] = pd.rolling_mean(rsiDF['Up'],14)
-			rsiDF['DownMean'] = pd.rolling_mean(rsiDF['Down'],14).abs()
-			rsiDF['RS'] = rsiDF['UpMean'] / rsiDF['DownMean']
-			rsiDF['RSI'] = 100 - (100/(1+rsiDF['RS']))
-			self.data['RSI'] = rsiDF['RSI']
+		x = self.data['Adj Close'].copy() # deep copy the data into a series
+		delta = x.diff().dropna()
+		rsiDF = pd.DataFrame({"Up" : delta, "Down" : delta})
+		rsiDF['Up'] = rsiDF['Up'][rsiDF['Up'] > 0]
+		rsiDF['Down'] = rsiDF['Down'][rsiDF['Down'] < 0]
+		rsiDF = rsiDF.fillna(value=0)
+		rsiDF['UpMean'] = pd.rolling_mean(rsiDF['Up'],14)
+		rsiDF['DownMean'] = pd.rolling_mean(rsiDF['Down'],14).abs()
+		rsiDF['RS'] = rsiDF['UpMean'] / rsiDF['DownMean']
+		rsiDF['RSI'] = 100 - (100/(1+rsiDF['RS']))
+		self.data['RSI'] = rsiDF['RSI']
+
+	def calc_macd(self):
+		macdDF = pd.DataFrame({ 'Adj Close' : self.data['Adj Close'].copy() })
+		macdDF['EMA12'] = pd.ewma(macdDF['Adj Close'], span=12)
+		macdDF['EMA26'] = pd.ewma(macdDF['Adj Close'], span=26)
+		macdDF['MACD'] = macdDF['EMA12'] - macdDF['EMA26']
+		macdDF['Signal'] = pd.ewma(macdDF['MACD'],span=9)
+		self.data['MACD'] = macdDF['MACD']
+		self.data['MACD-Signal'] = macdDF['Signal']
 
 	def calc_all(self):
 		self.calc_sma(20)
 		self.calc_sma(50)
 		self.calc_sma(200)
 		self.calc_rsi()
+		self.calc_macd()
 		self.clear_NaN()
 		self.data = np.round(self.data,2)
 
