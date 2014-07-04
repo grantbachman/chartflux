@@ -1,5 +1,5 @@
 import datetime
-from pandas import DataFrame, rolling_mean
+import pandas as pd
 import numpy as np
 from pandas.io.data import DataReader
 import os
@@ -15,7 +15,7 @@ class Stock:
 	exchange - Exchange on which the stock is listed.
 	start - The start date of the stock's data
 	end - The end date of the stock's data
-	data - The Pandas Dataframe containing the stock's data
+	data - The Pandas DataFrame containing the stock's data
 	- Why this is needed: in order to display a stock's moving average, there
 				there would be no moving average value until the number of days for
 				which the average is comprised is met. e.g. 200 day moving average needs
@@ -37,12 +37,26 @@ class Stock:
 		# Check that there are enough rows to be able to calculate a non-Nan value
 		if self.data.shape[0] > num_days:
 				column_title = 'sma' + str(num_days) if column_title is None else column_title
-				self.data[column_title] = rolling_mean(self.data['Adj Close'], num_days)
+				self.data[column_title] = pd.rolling_mean(self.data['Adj Close'], num_days)
+
+	def calc_rsi(self):
+			x = self.data['Adj Close'].copy() # deep copy the data into a series
+			delta = x.diff().dropna()
+			rsiDF = pd.DataFrame({"Up" : delta, "Down" : delta})
+			rsiDF['Up'] = rsiDF['Up'][rsiDF['Up'] > 0]
+			rsiDF['Down'] = rsiDF['Down'][rsiDF['Down'] < 0]
+			rsiDF = rsiDF.fillna(value=0)
+			rsiDF['UpMean'] = pd.rolling_mean(rsiDF['Up'],14)
+			rsiDF['DownMean'] = pd.rolling_mean(rsiDF['Down'],14).abs()
+			rsiDF['RS'] = rsiDF['UpMean'] / rsiDF['DownMean']
+			rsiDF['RSI'] = 100 - (100/(1+rsiDF['RS']))
+			self.data['RSI'] = rsiDF['RSI']
 
 	def calc_all(self):
 		self.calc_sma(20)
 		self.calc_sma(50)
 		self.calc_sma(200)
+		self.calc_rsi()
 		self.clear_NaN()
 		self.data = np.round(self.data,2)
 
@@ -68,7 +82,7 @@ class Stock:
 			data = DataReader(self.ticker, "yahoo", self.start, self.end)
 		except:	   # stock data not retrieved
 			data = None
-		if isinstance(data, DataFrame):
+		if isinstance(data, pd.DataFrame):
 			self.data = data
 			self.is_valid = True
 		else:

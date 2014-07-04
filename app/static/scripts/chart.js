@@ -4,6 +4,7 @@ function generatePriceChart(ticker,company_name,importData){
                  "SMA20" : [],
                  "SMA50" : [],
                  "SMA200" : [],
+                 "RSI" : []
                 };
   for (var i=0; i < importData.length; i++){
     dataset["Price"].push([importData[i]["Date"], importData[i]["Adj Close"]]);
@@ -11,6 +12,7 @@ function generatePriceChart(ticker,company_name,importData){
     dataset["SMA20"].push([importData[i]["Date"], importData[i]["sma20"]]);
     dataset["SMA50"].push([importData[i]["Date"], importData[i]["sma50"]]);
     dataset["SMA200"].push([importData[i]["Date"], importData[i]["sma200"]]);
+    dataset["RSI"].push([importData[i]["Date"], importData[i]["RSI"]]);
   }
   $(function(){
     $('#chart').highcharts('StockChart', {
@@ -23,13 +25,19 @@ function generatePriceChart(ticker,company_name,importData){
           yAxis: [{
                     labels: { align: 'right', x: -3 },
                     title: { text: ticker },
-                    height: '80%',
+                    height: '50%',
+                  },
+                  {
+                    labels: { align: 'right', x: -3 },
+                    title: { text: 'RSI' },
+                    top : '50%',
+                    height: '25%',
                   },
                   {
                     labels: { align: 'right', x: -3 },
                     title: { text: 'Volume' },
-                    top: '85%',
-                    height: '15%',
+                    top: '75%',
+                    height: '25%',
                     offset: 0,
                     lineWidth: 2
                   }],
@@ -62,10 +70,16 @@ function generatePriceChart(ticker,company_name,importData){
                     zIndex: 0,
                   },
                   {
+                    name: 'RSI',
+                    data: dataset["RSI"],
+                    lineWidth: 1,
+                    yAxis: 1,
+                  },
+                  {
                     type: 'column',
                     name: 'Volume',
                     data: dataset["Volume"],
-                    yAxis: 1,
+                    yAxis: 2,
                   }]
           });
     });
