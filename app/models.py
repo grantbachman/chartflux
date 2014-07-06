@@ -62,7 +62,6 @@ class Stock:
 		self.data['MACD-Signal'] = macdDF['Signal']
 
 	def calc_all(self):
-		self.calc_sma(20)
 		self.calc_sma(50)
 		self.calc_sma(200)
 		self.calc_rsi()

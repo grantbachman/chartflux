@@ -4,8 +4,7 @@
 		<script src="{{ url_for('static', filename='scripts/jquery-1.11.1.min.js')}}"></script>
 		<script src="{{ url_for('static', filename='scripts/highstock.js')}}"></script>
 		<script src="{{ url_for('static', filename='scripts/chart.js') }}"></script>
-		<div id="chart" style="height:900px; min-width:40%">
-		</div>
+		<div id="chart" style="height:300px; min-width:40%; max-width:100%"></div>
 		<script>
 			var ticker = '{{ stock.ticker }}';
 			var company_name = '{{ stock.name }}';
