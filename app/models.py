@@ -13,13 +13,7 @@ class Stock:
 	ticker - Stock's ticker symbol
 	name - Name of the company
 	exchange - Exchange on which the stock is listed.
-	start - The start date of the stock's data
-	end - The end date of the stock's data
 	data - The Pandas DataFrame containing the stock's data
-	- Why this is needed: in order to display a stock's moving average, there
-				there would be no moving average value until the number of days for
-				which the average is comprised is met. e.g. 200 day moving average needs
-				200 days worth of prior data to have a non-zero value.
 	'''
 
 	def __init__(self, ticker):

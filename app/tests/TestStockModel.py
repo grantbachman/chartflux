@@ -3,8 +3,6 @@ import sys, os
 from types import NoneType
 import datetime as dt
 from pandas import Timestamp, DataFrame, Series
-from pandas.util.testing import assert_frame_equal
-import pickle
 from app import myApp
 from app.models import Stock
 import unittest
