@@ -1,6 +1,13 @@
-"""
-This is the configuration that gets loaded when pushed to Production
+from os import getenv
 
-chartflux/instance/config.py can override these settings (check __init__.py)
-"""
-DEBUG = False
+class Config(object):
+  DEBUG = False
+
+class ProductionConfig(Config):
+  DATABASE_HOST = getenv('DATABASE_HOST', None)
+  DATABASE_PORT = getenv('DATABASE_PORT', None)
+
+class DevelopmentConfig(Config):
+  DEBUG = True
+  DATABASE_HOST = 'localhost'
+  DATABASE_PORT = 27017
