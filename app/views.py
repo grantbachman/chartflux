@@ -17,10 +17,8 @@ def show_stock():
   value = request.args.get('value')
   unit = request.args.get('unit')
   stock = Stock(stock)
-  if not stock.is_valid:
-    error = "Invalid ticker symbol."
-    return render_template('index.html', error = error)
-  else:
+
+  if stock.data is not None:
     stock.calc_all()
     format_data = stock.data.reset_index()  # DateTimeIndex to column
     format_data = format_data.to_json(date_format='epoch', orient='records')
@@ -29,6 +27,9 @@ def show_stock():
     format_data = Markup(format_data)
     # need to redirect instead
     return render_template('chart.html', stock=stock, data=format_data)
+  else:
+    error = "Invalid ticker symbol."
+    return render_template('index.html', error = error)
 
 def getTimeDelta(value=3, unit="years"):
   try:

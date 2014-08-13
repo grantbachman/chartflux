@@ -1,64 +1,67 @@
 #!../env/bin/python
 import sys, os
+import datetime
 from types import NoneType
 import datetime as dt
+import pandas as pd
 from pandas import Timestamp, DataFrame, Series
 from app import myApp
 from app.models import Stock
-import unittest
+from mock import Mock, MagicMock, patch
+from unittest import TestCase
+import aapl_test_data
 
-class TestStockModel(unittest.TestCase):
+class TestStockModel(TestCase):
 
-	def test_init_succeed(self):
-		self.stock = Stock("tsla")
-		self.failIf(self.stock.ticker != "TSLA")
-		self.failIf(self.stock.is_valid is not True)
-		self.failUnless(self.stock.is_valid is True)
+	def setUp(self):
+		self.stock = MagicMock(Stock)
+		self.stock.ticker = "AAPL"
+		self.stock.data = DataFrame(aapl_test_data.data)
+		self.stock.data.index.name = 'Date' # can't set the name w/ pd.DataFrame
+		self.stock.name = 'Apple Inc.'
+		self.stock.exchange = 'NASDAQ'
+
+	def test_init(self):
 		assert(self.stock.data is not None)
 
-	def test_init_fail(self):
-		self.stock = Stock("adsfadf")
-		assert(self.stock.is_valid is False)
-		assert(self.stock.data is None)
+	@patch('app.models.pd.rolling_mean', return_value=Series())
+	def test_calc_sma(self, patched_rolling_mean):
+		# for some reason, the test doesn't pass when I directly pass in
+		# self.stock.data['Adj Close'] to the assert_called_with function. It
+		# bombs out somewhere deep in Pandas... I'll need to figure that out later
+		adj_close = self.stock.data['Adj Close']
+		Stock.calc_sma(self.stock, 3)
+		patched_rolling_mean.assert_called_with(adj_close, 3)
+		assert(isinstance(self.stock.data['sma3'], Series) is not None)
 
-	def test_get_name_and_exchange_is_success(self):
-		self.stock = Stock("GOOG")
-		return_tuple = self.stock.get_name_and_exchange()
-		assert(return_tuple[0] == "Google Inc.")
-		print return_tuple
-		assert(return_tuple[1] == "NASDAQ")
+	def test_get_name_and_exchange(self):
+		name_exchange_tuple = Stock.get_name_and_exchange(self.stock)
+		assert(name_exchange_tuple[0] == 'Apple Inc.')
+		assert(name_exchange_tuple[1] == 'NASDAQ')
 
-	def test_get_name_and_exchange_is_failure(self):
-		self.stock = Stock("afdasdf")
-		return_tuple = self.stock.get_name_and_exchange()
-		assert(return_tuple is None)
+	@patch('app.models.DataReader')
+	def test_set_data(self, patched_DataReader):
+		num_days = 2 * 365
+		Stock.set_data(self.stock, num_days)
+		end = datetime.date.today()
+		start = end - datetime.timedelta(days = num_days + 365)
+		patched_DataReader.assert_called_with('AAPL', 'yahoo', start, end)
 
-	def test_set_data(self):
-		self.stock = Stock("tsla")
-		self.failUnless(isinstance(self.stock.data, DataFrame))
+	# Tests Stock.clear_NaN
+	def test_NaN(self):
+		Stock.calc_sma(self.stock,3)
+		# After calculating an average, ensure their are NaNs in the right places
+		assert(pd.isnull(self.stock.data.iloc[0]['sma3']))
+		assert(not pd.isnull(self.stock.data.iloc[2]['sma3']))
+		shape_before_clearing = self.stock.data.shape # tuple of (rows, columns)
+		Stock.clear_NaN(self.stock)
+		# assert the number of rows decreases by 2
+		assert(self.stock.data.shape[0] == shape_before_clearing[0] - 2)
+		# assert the number of columns remains the same
+		assert(self.stock.data.shape[1] == shape_before_clearing[1])
+		# Ensure there are no more NaNs.
+		assert(not pd.isnull(self.stock.data.iloc[0]['sma3']))
 
-	# Should return a valid DataFrame
-	def test_valid_stock(self):
-		stock = Stock("TSLA")
-		self.failIf(stock.data is None)
-		self.failUnless(isinstance(stock.data, DataFrame))
-		self.failIf(stock.is_valid is not True)
-
-	def test_implicit_column_name_create(self):
-		stock = Stock("TSLA")
-		stock.calc_sma(20)
-		assert(isinstance(stock.data['sma20'], Series))
-
-	def test_calc_has_NaN(self):
-		stock = Stock("AMZN")
-		stock.calc_sma(20)
-		assert(stock.data.isnull().any().any() == True)
-
-	def test_clear_NaN(self):
-		stock = Stock("AMZN")
-		stock.calc_all()
-		print stock.data.isnull().any()
-		assert(stock.data.isnull().any().any() == False)
 
 def main():
 	unittest.main()

@@ -4,7 +4,6 @@ import numpy as np
 from pandas.io.data import DataReader
 import os
 
-
 class Stock:
 	'''
 	This is the Stock object.
@@ -19,19 +18,13 @@ class Stock:
 	def __init__(self, ticker):
 		self.ticker = ticker.upper()
 		name_exchange_tuple = self.get_name_and_exchange()
-		if name_exchange_tuple is not None:
-			self.name, self.exchange = name_exchange_tuple
-			self.is_valid = True
-			self.set_data()
-		else:
-			self.is_valid = False
-			self.data = None
+		self.set_data(2*365)
 
 	def calc_sma(self, num_days, column_title=None):
 		# Check that there are enough rows to be able to calculate a non-Nan value
 		if self.data.shape[0] > num_days:
-				column_title = 'sma' + str(num_days) if column_title is None else column_title
-				self.data[column_title] = pd.rolling_mean(self.data['Adj Close'], num_days)
+			column_title = 'sma' + str(num_days) if column_title is None else column_title
+			self.data[column_title] = pd.rolling_mean(self.data['Adj Close'], num_days)
 
 	def calc_rsi(self):
 		x = self.data['Adj Close'].copy() # deep copy the data into a series
@@ -63,6 +56,8 @@ class Stock:
 		self.clear_NaN()
 		self.data = np.round(self.data,2)
 
+	# Clear away any rows that are blank as a result of calculating averages
+	# E.G. the first two rows will be blank when calculating the 3-day SMA
 	def clear_NaN(self):
 		self.data.dropna(0,'any',None,None,True)
 
@@ -72,21 +67,14 @@ class Stock:
 				for line in inFile:
 					split = line.strip('\n').split('\t')
 					if split[1] == self.ticker:
-						return (split[2], split[0])
+						return (split[2], split[0]) # split[2] = name, split[0] = exchange
 		return None
 
-	def set_data(self):
-		display_days = 3 * 365
-		lookback_days = display_days + 365 # calculating 200 day moving average
-		self.end = datetime.date.today()
-		self.start = self.end - datetime.timedelta(days = lookback_days)
-		self.display_start_date = self.end - datetime.timedelta(days = display_days)
+	def set_data(self,num_days):
+		lookback_days = num_days + 365 # calculating 200 day moving average
+		end = datetime.date.today()
+		start = end - datetime.timedelta(days = lookback_days)
 		try:
-			data = DataReader(self.ticker, "yahoo", self.start, self.end)
+			self.data = DataReader(self.ticker, "yahoo", start, end)
 		except:	   # stock data not retrieved
-			data = None
-		if isinstance(data, pd.DataFrame):
-			self.data = data
-			self.is_valid = True
-		else:
-			self.is_valid = False
+			self.data = None

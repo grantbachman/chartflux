@@ -18,6 +18,5 @@ else:
 
 
 # open up the DB connection
-mongo = MongoClient(myApp.config['DATABASE_HOST'], myApp.config['DATABASE_PORT'])
 
 from app import views # app refers to the package
