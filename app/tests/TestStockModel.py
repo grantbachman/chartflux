@@ -21,9 +21,6 @@ class TestStockModel(TestCase):
 		self.stock.name = 'Apple Inc.'
 		self.stock.exchange = 'NASDAQ'
 
-	def test_init(self):
-		assert(self.stock.data is not None)
-
 	@patch('app.models.pd.rolling_mean', return_value=Series())
 	def test_calc_sma(self, patched_rolling_mean):
 		# for some reason, the test doesn't pass when I directly pass in

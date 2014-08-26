@@ -1,14 +1,23 @@
 {% extends "layout.html" %}
 {% block body %}
-		<script type="text/javascript" src="{{ url_for('static', filename='scripts/chart.js') }}"></script>
 		<script src="{{ url_for('static', filename='scripts/jquery-1.11.1.min.js')}}"></script>
 		<script src="{{ url_for('static', filename='scripts/highstock.js')}}"></script>
 		<script src="{{ url_for('static', filename='scripts/chart.js') }}"></script>
-		<div id="chart" style="height:300px; min-width:40%; max-width:100%"></div>
 		<script>
 			var ticker = '{{ stock.ticker }}';
 			var company_name = '{{ stock.name }}';
 			var importData = JSON.parse('{{ data }}');
-			generatePriceChart(ticker, company_name, importData);
+			priceChart(ticker, company_name, importData)
 		</script>
+		<div id="chart-container min-width:40%; max-width:100%">
+			<div id="chart-nav">
+				<ul>
+					<li><button onclick="priceChart(ticker, company_name, importData)">Averages</button></li>
+					<li><button onclick="rsiChart(ticker, company_name, importData)">RSI</button></li>
+					<li><button onclick="macdChart(ticker, company_name, importData)">MACD</button></li>
+				</ul>
+			</div>
+			<div id="chart" style="height:500px; width:100%"></div>
+		</div>
+
 {% endblock %}

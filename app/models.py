@@ -17,7 +17,7 @@ class Stock:
 
 	def __init__(self, ticker):
 		self.ticker = ticker.upper()
-		name_exchange_tuple = self.get_name_and_exchange()
+		self.name, self.exchange = self.get_name_and_exchange()
 		self.set_data(2*365)
 
 	def calc_sma(self, num_days, column_title=None):

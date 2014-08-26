@@ -28,7 +28,7 @@ def show_stock():
     # need to redirect instead
     return render_template('chart.html', stock=stock, data=format_data)
   else:
-    error = "Invalid ticker symbol."
+    error = stock.ticker + " is an invalid ticker symbol."
     return render_template('index.html', error = error)
 
 def getTimeDelta(value=3, unit="years"):

@@ -2028,7 +2028,7 @@ ul li {
   padding-left: 16px;
 }
 ul li:before {
-  font-family: "icons";
+  //font-family: "icons";
   font-size: 13px;
   display: block;
   font-weight: 400;

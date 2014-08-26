@@ -205,6 +205,18 @@ button.menu img {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
+#chart-nav {
+}
+
+#chart-nav ul {
+  padding: 1em;
+  list-style-type: none;
+}
+
+#chart-nav ul li {
+  display: inline;
+}
+
 main {
   margin: 0 auto;
   /* Height of the header */
