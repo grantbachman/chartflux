@@ -3,7 +3,9 @@ function priceChart(ticker,company_name,importData){
       volume = [],
       sma = {
               'SMA50':[],
-              'SMA200': []
+              'SMA200': [],
+              'EWMA50': [],
+              'EWMA200': [],
             };
   for (var i=0; i < importData.length; i++){
     ohlc.push([
@@ -17,8 +19,11 @@ function priceChart(ticker,company_name,importData){
                 importData[i]['Date'],
                 importData[i]['Volume'],
       ]);
+
     sma['SMA50'].push([importData[i]['Date'], importData[i]['sma50']])
     sma['SMA200'].push([importData[i]['Date'], importData[i]['sma200']])
+    sma['EWMA50'].push([importData[i]['Date'], importData[i]['ewma50']])
+    sma['EWMA200'].push([importData[i]['Date'], importData[i]['ewma200']])
   }
   $(function () {
     $('#chart').highcharts('StockChart', {
@@ -27,13 +32,12 @@ function priceChart(ticker,company_name,importData){
       },
       chart: { zoomType: 'xy' },
       title: { text: company_name },
+      subtitle: { text: "Averages" },
       legend: { enabled: true },
       xAxis: { type: 'datetime' },
       yAxis: [
           { // Primary yAxis
-              title: {
-                  text: ticker,
-              },
+              title: { text: ticker },
               labels: {
                   format: '${value}',
               },
@@ -69,6 +73,20 @@ function priceChart(ticker,company_name,importData){
             color: Highcharts.getOptions().colors[3]
         },
         {
+            name: 'EWMA 50',
+            visible: false,
+            type: 'spline',
+            data: sma['EWMA50'],
+            color: Highcharts.getOptions().colors[4]
+        },
+        {
+            name: 'EWMA 200',
+            visible: false,
+            type: 'spline',
+            data: sma['EWMA200'],
+            color: Highcharts.getOptions().colors[5]
+        },
+        {
             name: 'Volume',
             type: 'column',
             lineWidth: 1,
@@ -96,13 +114,12 @@ function rsiChart(ticker,company_name,importData){
             },
             chart: { zoomType: 'xy' },
             title: { text: company_name },
+            subtitle: { text: "Relative Strength Index" },
             legend: { enabled: true },
             xAxis: { type: 'datetime' },
             yAxis: [
                 { // Primary yAxis
-                    title: {
-                        text: ticker + ' RSI'
-                    },
+                    title: { text: ticker + ' RSI' },
                     labels: {
                         format: '{value}',
                     },
@@ -148,7 +165,8 @@ function macdChart(ticker,company_name,importData){
   for (var i=0; i < importData.length; i++){
           macd['MACD'].push([importData[i]['Date'], importData[i]['MACD']])
           macd['MACD-Signal'].push([importData[i]['Date'], importData[i]['MACD-Signal']])
-          macd['Histogram'].push([importData[i]['Date'], importData[i]['MACD'] - importData[i]['MACD-Signal']])
+          var hist = importData[i]['MACD'] - importData[i]['MACD-Signal']
+          macd['Histogram'].push([importData[i]['Date'], Math.round(hist * 100) / 100])
   }
   $(function () {
           $('#chart').highcharts('StockChart', {
@@ -157,13 +175,12 @@ function macdChart(ticker,company_name,importData){
             },
             chart: { zoomType: 'xy' },
             title: { text: company_name },
+            subtitle: { text: "Moving Average Convergence Divergence" },
             legend: { enabled: true },
             xAxis: { type: 'datetime' },
             yAxis: [
                 { // Primary yAxis
-                    title: {
-                        text: ticker + ' MACD'
-                    },
+                    title: { text: ticker + ' MACD' },
                     labels: {
                         format: '{value}',
                     },

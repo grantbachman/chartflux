@@ -26,6 +26,12 @@ class Stock:
 			column_title = 'sma' + str(num_days) if column_title is None else column_title
 			self.data[column_title] = pd.rolling_mean(self.data['Adj Close'], num_days)
 
+	def calc_ewma(self, num_days, column_title=None):
+		# Check that there are enough rows to be able to calculate a non-Nan value
+		if self.data.shape[0] > num_days:
+			column_title = 'ewma' + str(num_days) if column_title is None else column_title
+			self.data[column_title] = pd.ewma(self.data['Adj Close'], span=num_days)
+
 	def calc_rsi(self):
 		x = self.data['Adj Close'].copy() # deep copy the data into a series
 		delta = x.diff().dropna()
@@ -51,6 +57,8 @@ class Stock:
 	def calc_all(self):
 		self.calc_sma(50)
 		self.calc_sma(200)
+		self.calc_ewma(50)
+		self.calc_ewma(200)
 		self.calc_rsi()
 		self.calc_macd()
 		self.clear_NaN()
