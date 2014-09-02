@@ -9,3 +9,4 @@ gulpfile.js
 #*.ipynb # needed moved to .git/info/exclude to actually ignore IPython Notebooks...
 .ipynb_checkpoints
 .DS_Store
+gdb-chartflux.pem

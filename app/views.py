@@ -17,7 +17,6 @@ def show_stock():
   value = request.args.get('value')
   unit = request.args.get('unit')
   stock = Stock(stock)
-
   if stock.data is not None:
     stock.calc_all()
     format_data = stock.data.reset_index()  # DateTimeIndex to column
